@@ -1,0 +1,425 @@
+/* SimulS2ST-Omni page overrides — keep Bulma layout, drop purple/Inter defaults */
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700&family=Source+Sans+3:wght@400;500;600;700&display=swap');
+
+:root {
+  --primary-color: #0f4c5c;
+  --primary-hover: #0a3640;
+  --secondary-color: #5c6b73;
+  --accent-color: #e36414;
+  --text-primary: #14212b;
+  --text-secondary: #4a5a63;
+  --text-light: #7a8a93;
+  --background-primary: #f7f4ef;
+  --background-secondary: #efe9e0;
+  --background-accent: #e4ddd2;
+  --border-color: #d5cdc0;
+  --gradient-primary: linear-gradient(145deg, #0f4c5c 0%, #1a6b7a 55%, #e36414 160%);
+  --gradient-accent: linear-gradient(120deg, #e36414 0%, #c44900 100%);
+  --gradient-subtle: linear-gradient(180deg, #f7f4ef 0%, #ebe4d8 100%);
+}
+
+body {
+  font-family: 'Source Sans 3', 'Segoe UI', sans-serif;
+  background:
+    radial-gradient(1200px 600px at 10% -10%, rgba(15, 76, 92, 0.08), transparent 55%),
+    radial-gradient(900px 500px at 100% 0%, rgba(227, 100, 20, 0.07), transparent 50%),
+    var(--background-primary);
+}
+
+.publication-title,
+.title.is-1,
+.title.is-2,
+.title.is-3 {
+  font-family: 'Fraunces', Georgia, serif !important;
+  letter-spacing: -0.02em;
+  color: var(--text-primary) !important;
+}
+
+.hero {
+  background: transparent;
+}
+
+.hero.is-light,
+.section.hero.is-light {
+  background: rgba(239, 233, 224, 0.72) !important;
+}
+
+.live-demo-kicker {
+  margin: 0 0 0.85rem;
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  line-height: 1.45;
+}
+
+.live-demo-source {
+  display: inline-block;
+  margin-top: 0.2rem;
+  font-family: 'Fraunces', Georgia, serif;
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--primary-color);
+}
+
+.live-demo-credit {
+  display: inline-block;
+  margin-top: 0.35rem;
+  font-size: 0.92rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+}
+
+.live-demo-credit a {
+  color: var(--primary-color);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.live-demo-credit a:hover {
+  color: var(--accent-color);
+}
+
+.venue-badge {
+  display: inline-block;
+  margin: 0.15rem 0 0.85rem;
+  padding: 0.28rem 0.85rem;
+  border-radius: 999px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--primary-color);
+  background: rgba(15, 76, 92, 0.1);
+  border: 1px solid rgba(15, 76, 92, 0.18);
+}
+
+.button.is-dark {
+  background: var(--primary-color) !important;
+}
+
+.button.coming-soon,
+.button.is-static.coming-soon {
+  background: #c8c2b8 !important;
+  color: #6b6560 !important;
+  border: none !important;
+  box-shadow: none !important;
+  cursor: not-allowed;
+  pointer-events: none;
+  opacity: 0.85;
+}
+
+.publication-links-secondary {
+  margin-top: 0.65rem;
+}
+
+.button.is-dark:hover {
+  background: var(--accent-color) !important;
+}
+
+.teaser video,
+.publication-video video {
+  border-radius: 10px;
+  box-shadow: 0 18px 40px rgba(20, 33, 43, 0.18);
+  background: #0b1a20;
+  width: 100%;
+}
+
+.metric-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  justify-content: center;
+  margin: 1.25rem 0 0.25rem;
+}
+
+.metric-pill {
+  border: 1px solid var(--border-color);
+  background: rgba(255, 255, 255, 0.7);
+  border-radius: 999px;
+  padding: 0.4rem 0.9rem;
+  font-size: 0.92rem;
+  color: var(--text-secondary);
+}
+
+.metric-pill strong {
+  color: var(--primary-color);
+  font-weight: 700;
+}
+
+.figure-block img {
+  width: 100%;
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
+  background: #fff;
+}
+
+.figure-block .caption {
+  margin-top: 0.75rem;
+  color: var(--text-secondary);
+  font-size: 0.98rem;
+}
+
+/* Widen content beyond Bulma's default desktop max */
+.container.is-max-desktop {
+  max-width: 1100px !important;
+}
+
+.container.is-max-widescreen,
+.container.page-wide {
+  max-width: 1480px !important;
+  width: 96% !important;
+}
+
+.case-columns {
+  align-items: stretch;
+}
+
+.case-columns > .column {
+  display: flex;
+}
+
+.case-columns .case-block {
+  width: 100%;
+  margin-bottom: 0;
+}
+
+.case-block {
+  border: 1px solid var(--border-color);
+  background: rgba(255, 255, 255, 0.78);
+  border-radius: 12px;
+  padding: 1.1rem 1.15rem 1.25rem;
+  margin-bottom: 1.5rem;
+}
+
+.case-block h3 {
+  font-family: 'Fraunces', Georgia, serif;
+  font-size: 1.25rem;
+  margin-bottom: 0.75rem;
+}
+
+.case-block .case-viz {
+  width: 100%;
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
+  background: #fff;
+  margin-bottom: 0.9rem;
+}
+
+.case-source-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem 1rem;
+  margin-bottom: 0.85rem;
+  padding: 0.55rem 0.75rem;
+  background: rgba(15, 76, 92, 0.06);
+  border-radius: 8px;
+  font-size: 0.92rem;
+  color: var(--text-secondary);
+}
+
+.case-source-bar audio {
+  flex: 1 1 220px;
+  min-width: 200px;
+  max-width: 420px;
+  height: 36px;
+}
+
+.case-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.86rem;
+  table-layout: fixed;
+}
+
+.case-table th,
+.case-table td {
+  border: 1px solid var(--border-color);
+  padding: 0.5rem 0.55rem;
+  vertical-align: top;
+  text-align: left;
+}
+
+.case-table th {
+  background: rgba(15, 76, 92, 0.08);
+  font-weight: 600;
+  text-align: center;
+}
+
+.case-table th.lat,
+.case-table td.lat {
+  width: 3.2rem;
+  text-align: center;
+  font-weight: 700;
+  color: var(--primary-color);
+}
+
+.case-table td.audio-cell {
+  width: 9.5rem;
+  text-align: center;
+  vertical-align: middle;
+}
+
+.case-table td.audio-cell audio {
+  width: 100%;
+  max-width: 150px;
+  height: 32px;
+}
+
+.case-table td.text-cell {
+  word-break: break-word;
+  line-height: 1.45;
+  color: var(--text-primary);
+  font-family: ui-monospace, 'SFMono-Regular', Menlo, Consolas, monospace;
+  font-size: 0.78rem;
+}
+
+.case-table-compact {
+  font-size: 0.78rem;
+}
+
+.case-table-compact td.text-cell {
+  font-size: 0.7rem;
+  line-height: 1.35;
+}
+
+.case-table-compact td.audio-cell {
+  width: 8.2rem;
+}
+
+.case-table-compact td.audio-cell audio {
+  max-width: 125px;
+  height: 30px;
+}
+
+.cmp-ref {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  margin: 0.35rem 0 0.55rem;
+  line-height: 1.45;
+}
+
+.cmp-asr-note {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  margin: 0 0 0.65rem;
+  opacity: 0.9;
+}
+
+.case-table-cmp {
+  table-layout: fixed;
+  width: 100%;
+}
+
+.case-table-cmp th.sys-h,
+.case-table-cmp td.sys-cell {
+  width: 10.5rem;
+  text-align: center;
+  font-weight: 600;
+  color: var(--primary-color);
+  white-space: normal;
+  line-height: 1.25;
+  word-break: break-word;
+}
+
+.case-table-cmp td.text-cell {
+  font-family: 'Source Sans 3', 'Segoe UI', sans-serif;
+  font-size: 0.86rem;
+  line-height: 1.45;
+}
+
+.case-table-cmp td.audio-cell {
+  width: 8.5rem;
+}
+
+.case-table-cmp td.audio-cell audio {
+  width: 100%;
+  max-width: none;
+  height: 32px;
+}
+
+/* Long-form: Topic | m (latency) | Audio */
+.case-table-lf {
+  table-layout: fixed;
+  width: 100%;
+}
+
+.case-table-lf th.topic,
+.case-table-lf td.topic {
+  width: 28%;
+  text-align: left;
+}
+
+.case-table-lf th.lat,
+.case-table-lf td.lat {
+  width: 3.4rem;
+  padding-left: 0.25rem;
+  padding-right: 0.25rem;
+  text-align: center;
+}
+
+.case-table-lf th.audio-h,
+.case-table-lf td.audio-cell {
+  width: auto;
+}
+
+.case-table-lf td.audio-cell {
+  padding: 0.45rem 0.6rem;
+}
+
+.case-table-lf td.audio-cell audio {
+  width: 100%;
+  max-width: none;
+  min-width: 220px;
+  height: 34px;
+}
+
+@media (max-width: 1023px) {
+  .case-columns > .column {
+    display: block;
+  }
+
+  .case-columns .case-block {
+    margin-bottom: 1.5rem;
+  }
+}
+
+.case-table td.text-cell .seg {
+  color: var(--accent-color);
+  font-weight: 600;
+}
+
+@media (max-width: 900px) {
+  .case-table {
+    display: block;
+    overflow-x: auto;
+  }
+}
+
+.compare-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.95rem;
+  background: rgba(255, 255, 255, 0.7);
+}
+
+.compare-table th,
+.compare-table td {
+  border: 1px solid var(--border-color);
+  padding: 0.55rem 0.7rem;
+  text-align: center;
+}
+
+.compare-table th {
+  background: rgba(15, 76, 92, 0.08);
+  font-weight: 600;
+}
+
+.compare-table .best {
+  color: var(--accent-color);
+  font-weight: 700;
+}
+
+.more-works-container {
+  display: none !important;
+}

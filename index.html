@@ -1,0 +1,813 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="title" content="SimulS2ST-Omni — Streaming Speech-to-Speech Translation">
+  <meta name="description" content="Data-efficient streaming Chinese–English S2ST via explicit joint text–code trajectory supervision. Live m2 demo on a single RTX 4090.">
+  <meta name="keywords" content="simultaneous speech translation, streaming S2ST, speech language model, EMNLP">
+  <meta name="author" content="Rongshen He, Xinyu Liang, Dekun Chen, Jiaqi Li, Mingjie Chen, Zhizheng Wu">
+  <meta name="robots" content="index, follow">
+  <title>SimulS2ST-Omni | Streaming Speech-to-Speech Translation</title>
+
+  <link rel="icon" type="image/x-icon" href="static/images/favicon.ico">
+  <link rel="stylesheet" href="static/css/bulma.min.css">
+  <link rel="stylesheet" href="static/css/index.css">
+  <link rel="stylesheet" href="static/css/simuls2st.css">
+  <link rel="preload" href="static/css/fontawesome.all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript><link rel="stylesheet" href="static/css/fontawesome.all.min.css"></noscript>
+
+  <script defer src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script defer src="static/js/fontawesome.all.min.js"></script>
+  <script defer src="static/js/bulma-carousel.min.js"></script>
+  <script defer src="static/js/index.js"></script>
+</head>
+<body>
+  <button class="scroll-to-top" onclick="scrollToTop()" title="Scroll to top" aria-label="Scroll to top">
+    <i class="fas fa-chevron-up"></i>
+  </button>
+
+  <main id="main-content">
+  <section class="hero">
+    <div class="hero-body">
+      <div class="container is-max-desktop">
+        <div class="columns is-centered">
+          <div class="column has-text-centered">
+            <h1 class="title is-1 publication-title">SimulS2ST-Omni</h1>
+            <p class="is-size-5" style="max-width:44rem;margin:0.4rem auto 0.55rem;color:var(--text-secondary);">
+              Data-Efficient Streaming Speech-to-Speech Translation via Explicit Trajectory Supervision
+            </p>
+            <p class="venue-badge">Under Review</p>
+            <div class="is-size-5 publication-authors">
+              <span class="author-block"><a href="mailto:herongshen@cuhk.edu.cn">Rongshen He</a><sup>1,†</sup>,</span>
+              <span class="author-block">Xinyu Liang<sup>1</sup>,</span>
+              <span class="author-block">Dekun Chen<sup>1</sup>,</span>
+              <span class="author-block">Jiaqi Li<sup>1</sup>,</span>
+              <span class="author-block">Mingjie Chen<sup>1</sup>,</span>
+              <span class="author-block"><a href="mailto:wuzhizheng@cuhk.edu.cn">Zhizheng Wu</a><sup>1,†</sup></span>
+            </div>
+            <div class="is-size-5 publication-authors">
+              <span class="author-block"><sup>1</sup>The Chinese University of Hong Kong, Shenzhen</span>
+            </div>
+            <div class="column has-text-centered">
+              <div class="publication-links">
+                <span class="link-block">
+                  <a href="#live-demo" class="external-link button is-normal is-rounded is-dark">
+                    <span class="icon"><i class="fas fa-play"></i></span>
+                    <span>Live Demo</span>
+                  </a>
+                </span>
+                <span class="link-block">
+                  <a href="#cases" class="external-link button is-normal is-rounded is-dark">
+                    <span class="icon"><i class="fas fa-headphones"></i></span>
+                    <span>Cases</span>
+                  </a>
+                </span>
+                <span class="link-block">
+                  <a href="#results" class="external-link button is-normal is-rounded is-dark">
+                    <span class="icon"><i class="fas fa-chart-line"></i></span>
+                    <span>Results</span>
+                  </a>
+                </span>
+              </div>
+              <div class="publication-links publication-links-secondary">
+                <span class="link-block">
+                  <span class="external-link button is-normal is-rounded is-static coming-soon" aria-disabled="true" title="Coming soon">
+                    <span class="icon"><i class="fab fa-github"></i></span>
+                    <span>GitHub · Coming soon</span>
+                  </span>
+                </span>
+                <span class="link-block">
+                  <span class="external-link button is-normal is-rounded is-static coming-soon" aria-disabled="true" title="Coming soon">
+                    <span class="icon"><i class="fas fa-cube"></i></span>
+                    <span>Hugging Face · Coming soon</span>
+                  </span>
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="hero teaser" id="live-demo">
+    <div class="container is-max-desktop">
+      <div class="hero-body">
+        <p class="live-demo-kicker has-text-centered">
+          Realtime inference on YouTube videos
+          <br>
+          <span class="live-demo-source">“Inflation Explained with Bananas”</span>
+          <br>
+          <span class="live-demo-credit">
+            Source:
+            <a href="https://www.youtube.com/watch?v=MAvHgmewRDM" target="_blank" rel="noopener noreferrer">YouTube</a>
+            · Author: <strong>Primate Economics</strong>
+          </span>
+        </p>
+        <video id="live-demo-video" controls playsinline preload="metadata" poster="media/images/live_demo_poster.jpg">
+          <source src="media/video/live_demo_l2.mp4" type="video/mp4">
+        </video>
+        <div class="metric-row">
+          <span class="metric-pill"><strong>m2</strong> · 2s commit chunk</span>
+          <span class="metric-pill"><strong>1× RTX 4090</strong></span>
+          <span class="metric-pill">Decision latency ≈ <strong>2s</strong></span>
+          <span class="metric-pill">End-to-end feel ≈ <strong>4–5s</strong></span>
+          <span class="metric-pill">YouTube <strong>en→zh</strong> long-form</span>
+        </div>
+        <h2 class="subtitle has-text-centered" style="margin-top:1rem;">
+          Browser tab capture → streaming OmniTalker S2ST → live captions.
+          Latency is dominated by filling the m2 decision window (~2s), then compute and playback.
+        </h2>
+      </div>
+    </div>
+  </section>
+
+  <section class="section hero is-light">
+    <div class="container is-max-desktop">
+      <div class="columns is-centered has-text-centered">
+        <div class="column is-four-fifths">
+          <h2 class="title is-3">Abstract</h2>
+          <div class="content has-text-justified">
+            <p>
+              Long-form streaming speech-to-speech translation (S2ST) requires incremental, unbounded translation under strict latency constraints.
+              Existing methods typically suffer from sentence-bounded supervision or demand massive paired-S2ST supervision.
+              We introduce a training recipe enabling a speech language model for sentence-level and long-form streaming S2ST using only ~2k hours of paired cross-lingual S2ST data, layered atop auxiliary supervision.
+              Anchored by auxiliary multitask training, our approach remains robust even when the paired-S2ST budget itself is reduced by 90%.
+              Our core contribution, joint text-code trajectory supervision, schedules target text and acoustic semantic codes as a unified commitment path, eliminating the need for separate, unstable speech-side emission controllers.
+              Furthermore, our two-stream Thinker–Talker factorization significantly outperforms unified-decoder baselines by decoupling linguistic reasoning from dense acoustic prediction to mitigate modality interference.
+              Finally, our system achieves highly competitive quality-latency trade-offs on RealSI and ACL60/60-dev, matching state-of-the-art, closed-source S2ST systems such as LiveInterpret 2.0 on ASR-BLEU.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="method">
+    <div class="container is-max-desktop">
+      <h2 class="title is-3 has-text-centered">Method</h2>
+      <div class="columns is-multiline">
+        <div class="column is-full figure-block">
+          <img src="media/images/build_traj.png" alt="Streaming trajectory construction" loading="lazy">
+          <p class="caption has-text-centered">
+            <strong>Figure 1.</strong> Streaming trajectory construction.
+            Step 1: word-level and cross-lingual alignments establish the earliest valid source prefix for each target word.
+            Step 2: target text and segmented target speech codes inherit monotonized boundaries and are grouped into discrete read/wait/write steps for joint emission.
+          </p>
+        </div>
+        <div class="column is-full figure-block">
+          <img src="media/images/arch.png" alt="SimulS2ST-Omni architecture" loading="lazy">
+          <p class="caption has-text-centered">
+            <strong>Figure 2.</strong> Matched backbone comparison.
+            Thinker–Talker (left) and Dec-only (right) share an identical speech encoder, base LLM backbone (with independent LoRA adapters), semantic-code tokenizer, and frozen flow-matching/vocoder backend.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Sentence cases visualization -->
+  <section class="section hero is-light" id="cases-viz">
+    <div class="container is-max-widescreen page-wide">
+      <h2 class="title is-3 has-text-centered">Sentence-Level Cases Visualization</h2>
+      <p class="has-text-centered" style="color:var(--text-secondary);margin-bottom:1.25rem;max-width:44rem;margin-left:auto;margin-right:auto;">
+        Forced-aligned source chunks and multi-latency (m1–m4) target trajectories.
+        <code>|</code> marks commitment boundaries.
+        Stereo: <strong>L = source</strong>, <strong>R = translation</strong> with a leading
+        <strong>1 / 2 / 3 / 4&nbsp;s</strong> delay on the right channel.
+      </p>
+
+      <div class="columns is-desktop case-columns">
+        <!-- en2zh -->
+        <div class="column is-half">
+          <div class="case-block">
+            <h3>en→zh · Case 1</h3>
+            <img class="case-viz" src="media/images/case_study_en2zh_id61.png" alt="en2zh sentence case study" loading="lazy">
+            <div class="table-container">
+              <table class="case-table case-table-compact">
+                <thead>
+                  <tr>
+                    <th class="lat">m</th>
+                    <th>Source text</th>
+                    <th>Translated text</th>
+                    <th>Audio (L/R)</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="lat">m1</td>
+                    <td class="text-cell">um i i think <span class="seg">|</span> think in general look education <span class="seg">|</span> education has to <span class="seg">|</span> to evolve <span class="seg">|</span> uhhuh or become irrelevant <span class="seg">|</span> irrelevant in in our country <span class="seg">|</span> country</td>
+                    <td class="text-cell">嗯，我 <span class="seg">|</span> 认为总体而言， <span class="seg">|</span> 教育必须 <span class="seg">|</span> 与时俱进。 <span class="seg">|</span> 否则就会变得无关紧要 <span class="seg">|</span> 。在我们 <span class="seg">|</span> 这个国家，</td>
+                    <td class="audio-cell"><audio controls preload="none" src="media/audio/en2zh_stereo/pred_04_L1.wav"></audio></td>
+                  </tr>
+                  <tr>
+                    <td class="lat">m2</td>
+                    <td class="text-cell">um i i think in general look education <span class="seg">|</span> education has to evolve <span class="seg">|</span> uhhuh or become irrelevant in in our country <span class="seg">|</span> country</td>
+                    <td class="text-cell">嗯，我认为总的来说， <span class="seg">|</span> 教育必须与时俱进。 <span class="seg">|</span> 否则就会变得无关紧要。在我们 <span class="seg">|</span> 这个国家，</td>
+                    <td class="audio-cell"><audio controls preload="none" src="media/audio/en2zh_stereo/pred_04_L2.wav"></audio></td>
+                  </tr>
+                  <tr>
+                    <td class="lat">m3</td>
+                    <td class="text-cell">um i i think in general look education has to <span class="seg">|</span> to evolve uhhuh or become irrelevant in in our country <span class="seg">|</span> country</td>
+                    <td class="text-cell">嗯，我认为总的来说，教育必须 <span class="seg">|</span> 与时俱进，否则就会变得无关紧要。在我们 <span class="seg">|</span> 这个国家，</td>
+                    <td class="audio-cell"><audio controls preload="none" src="media/audio/en2zh_stereo/pred_04_L3.wav"></audio></td>
+                  </tr>
+                  <tr>
+                    <td class="lat">m4</td>
+                    <td class="text-cell">um i i think in general look education has to evolve <span class="seg">|</span> uhhuh or become irrelevant in in our country</td>
+                    <td class="text-cell">嗯，我认为总体而言，教育必须与时俱进。 <span class="seg">|</span> 否则就会变得无关紧要。在我们国家，</td>
+                    <td class="audio-cell"><audio controls preload="none" src="media/audio/en2zh_stereo/pred_04_L4.wav"></audio></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- zh2en -->
+        <div class="column is-half">
+          <div class="case-block">
+            <h3>zh→en · Case 2</h3>
+            <img class="case-viz" src="media/images/case_study_zh2en_id221.png" alt="zh2en sentence case study" loading="lazy">
+            <div class="table-container">
+              <table class="case-table case-table-compact">
+                <thead>
+                  <tr>
+                    <th class="lat">m</th>
+                    <th>Source text</th>
+                    <th>Translated text</th>
+                    <th>Audio (L/R)</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="lat">m1</td>
+                    <td class="text-cell">我我们最初 <span class="seg">|</span> 初的初衷呢 <span class="seg">|</span> 就是认为 <span class="seg">|</span> 为气候变化这个议 <span class="seg">|</span> 题其实非常 <span class="seg">|</span> 常的广大 <span class="seg">|</span> 大而且需要 <span class="seg">|</span> 多方的合 <span class="seg">|</span> 合作</td>
+                    <td class="text-cell">Our initial <span class="seg">|</span> focus was <span class="seg">|</span> on the idea that climate change <span class="seg">|</span> is actually <span class="seg">|</span> a very broad <span class="seg">|</span> issue and requires <span class="seg">|</span> collaboration from multiple <span class="seg">|</span> sides.</td>
+                    <td class="audio-cell"><audio controls preload="none" src="media/audio/zh2en_stereo/pred_08_L1.wav"></audio></td>
+                  </tr>
+                  <tr>
+                    <td class="lat">m2</td>
+                    <td class="text-cell">我我们最初的初衷呢 <span class="seg">|</span> 就是认为气候变化这个议 <span class="seg">|</span> 题其实非常的广大 <span class="seg">|</span> 大而且需要多方的合 <span class="seg">|</span> 合作</td>
+                    <td class="text-cell">What was our initial <span class="seg">|</span> focus? We believed that climate change <span class="seg">|</span> is actually a very broad <span class="seg">|</span> issue that requires <span class="seg">|</span> collaboration among multiple parties.</td>
+                    <td class="audio-cell"><audio controls preload="none" src="media/audio/zh2en_stereo/pred_08_L2.wav"></audio></td>
+                  </tr>
+                  <tr>
+                    <td class="lat">m3</td>
+                    <td class="text-cell">我我们最初的初衷呢就是认为 <span class="seg">|</span> 为气候变化这个议题其实非常的广大 <span class="seg">|</span> 大而且需要多方的合作</td>
+                    <td class="text-cell">Our initial focus was <span class="seg">|</span> on the fact that the issue of climate change is actually very <span class="seg">|</span> vast and requires cooperation from multiple parties.</td>
+                    <td class="audio-cell"><audio controls preload="none" src="media/audio/zh2en_stereo/pred_08_L3.wav"></audio></td>
+                  </tr>
+                  <tr>
+                    <td class="lat">m4</td>
+                    <td class="text-cell">我我们最初的初衷呢就是认为气候变化这个议 <span class="seg">|</span> 题其实非常的广大而且需要多方的合 <span class="seg">|</span> 合作</td>
+                    <td class="text-cell">Our initial focus was on the idea that climate change <span class="seg">|</span> is actually very broad and requires <span class="seg">|</span> collaboration among multiple parties.</td>
+                    <td class="audio-cell"><audio controls preload="none" src="media/audio/zh2en_stereo/pred_08_L4.wav"></audio></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+
+
+
+
+  <!-- Sentence-level cases (system comparisons) -->
+  <section class="section" id="cases">
+    <div class="container is-max-widescreen page-wide">
+      <h2 class="title is-3 has-text-centered">Sentence-Level Cases</h2>
+      <p class="has-text-centered" style="color:var(--text-secondary);margin-bottom:1.25rem;max-width:52rem;margin-left:auto;margin-right:auto;">
+        Sentence-level samples from our human evaluation set.
+        Compare <strong>Ours (m2 / m5)</strong> with <strong>LiveInterpret</strong> and <strong>Seamless-Streaming</strong>
+        (plain mono audio).
+        Translation text is obtained by ASR:
+        <strong>Paraformer-zh</strong> for en→zh outputs,
+        <strong>Whisper-large-v3</strong> for zh→en outputs.
+      </p>
+
+      <div class="columns is-desktop case-columns">
+
+        <div class="column is-half">
+          <div class="case-block">
+            <h3>en→zh · Case 1</h3>
+            <div class="case-source-bar">
+              <span><strong>Source</strong></span>
+              <audio controls preload="none" src="media/audio/human_eval/en2zh/source/176.wav"></audio>
+            </div>
+            <p class="cmp-ref"><strong>Source text:</strong> Without the ability to do that, um towns on the shoreline aren&#x27;t left with any real incentive structure to do restrictive zoning, because that&#x27;s where their bread is is buttered,</p>
+            <p class="cmp-ref"><strong>Reference:</strong> 但如果没有这个能力，海岸线上的城镇就没有任何激励机制来限制区域划分，因为这是他们的利益所在。</p>
+            <p class="cmp-asr-note">Translation text: ASR via <strong>Paraformer-zh</strong></p>
+            <div class="table-container">
+              <table class="case-table case-table-cmp">
+                <thead>
+                  <tr>
+                    <th class="sys-h">System</th>
+                    <th>Translation text (ASR)</th>
+                    <th class="audio-h">Audio</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="sys-cell">Ours (m2)</td>
+                    <td class="text-cell">海岸线上的成镇在有真正的激励机制来是限制性分区因为今天的源就在这里</td>
+                    <td class="audio-cell"><audio controls preload="none" src="media/audio/human_eval/en2zh/ours_L2/176.wav"></audio></td>
+                  </tr>
+                  <tr>
+                    <td class="sys-cell">Ours (m5)</td>
+                    <td class="text-cell">没有这种能力海岸线上的城镇就没有真正的激励机制来实施限制性分区因为那才是他们的生计所在</td>
+                    <td class="audio-cell"><audio controls preload="none" src="media/audio/human_eval/en2zh/ours_L5/176.wav"></audio></td>
+                  </tr>
+                  <tr>
+                    <td class="sys-cell">LiveInterpret</td>
+                    <td class="text-cell">如果没有这种能力沿海城镇就没有真正的激励机制来进行限制性分区因为那是他们的归基所在</td>
+                    <td class="audio-cell"><audio controls preload="none" src="media/audio/human_eval/en2zh/liveinterpret_official_ast/176.wav"></audio></td>
+                  </tr>
+                  <tr>
+                    <td class="sys-cell">Seamless-Streaming</td>
+                    <td class="text-cell">没有能力做那事在海岸线上的城镇没有留下任何真正的激励结构来做限制请区分因为因为那是因为那边的面包是蚌</td>
+                    <td class="audio-cell"><audio controls preload="none" src="media/audio/human_eval/en2zh/seamless_streaming/176.wav"></audio></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <div class="column is-half">
+          <div class="case-block">
+            <h3>zh→en · Case 1</h3>
+            <div class="case-source-bar">
+              <span><strong>Source</strong></span>
+              <audio controls preload="none" src="media/audio/human_eval/zh2en/source/377.wav"></audio>
+            </div>
+            <p class="cmp-ref"><strong>Source text:</strong> 可以说在这个意义上，身体它本身就是携带着一种，一种原始性的意义，</p>
+            <p class="cmp-ref"><strong>Reference:</strong> In this sense, the body itself carries a kind of original meaning.</p>
+            <p class="cmp-asr-note">Translation text: ASR via <strong>Whisper-large-v3</strong></p>
+            <div class="table-container">
+              <table class="case-table case-table-cmp">
+                <thead>
+                  <tr>
+                    <th class="sys-h">System</th>
+                    <th>Translation text (ASR)</th>
+                    <th class="audio-h">Audio</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="sys-cell">Ours (m2)</td>
+                    <td class="text-cell">In this sense, the body itself carries a kind of primitive meaning.</td>
+                    <td class="audio-cell"><audio controls preload="none" src="media/audio/human_eval/zh2en/ours_L2/377.wav"></audio></td>
+                  </tr>
+                  <tr>
+                    <td class="sys-cell">Ours (m5)</td>
+                    <td class="text-cell">In this sense, the body itself carries a primitive meaning.</td>
+                    <td class="audio-cell"><audio controls preload="none" src="media/audio/human_eval/zh2en/ours_L5/377.wav"></audio></td>
+                  </tr>
+                  <tr>
+                    <td class="sys-cell">LiveInterpret</td>
+                    <td class="text-cell">In this sense,</td>
+                    <td class="audio-cell"><audio controls preload="none" src="media/audio/human_eval/zh2en/liveinterpret_official_ast/377.wav"></audio></td>
+                  </tr>
+                  <tr>
+                    <td class="sys-cell">Seamless-Streaming</td>
+                    <td class="text-cell">In this sense, the body itself carries with it a kind of primal meaning.</td>
+                    <td class="audio-cell"><audio controls preload="none" src="media/audio/human_eval/zh2en/seamless_streaming/377.wav"></audio></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="columns is-desktop case-columns">
+
+        <div class="column is-half">
+          <div class="case-block">
+            <h3>en→zh · Case 2</h3>
+            <div class="case-source-bar">
+              <span><strong>Source</strong></span>
+              <audio controls preload="none" src="media/audio/human_eval/en2zh/source/83.wav"></audio>
+            </div>
+            <p class="cmp-ref"><strong>Source text:</strong> Because so much of their time has to be spent on boiling things down to this standardized box that everybody is placed in.</p>
+            <p class="cmp-ref"><strong>Reference:</strong> 因为他们得花太多时间将所有学生置于这个标准化的框框里。</p>
+            <p class="cmp-asr-note">Translation text: ASR via <strong>Paraformer-zh</strong></p>
+            <div class="table-container">
+              <table class="case-table case-table-cmp">
+                <thead>
+                  <tr>
+                    <th class="sys-h">System</th>
+                    <th>Translation text (ASR)</th>
+                    <th class="audio-h">Audio</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="sys-cell">Ours (m2)</td>
+                    <td class="text-cell">因为他们大部分时间都必须花在将事物简化为这种标准化的框架上而每个人都被置于其中</td>
+                    <td class="audio-cell"><audio controls preload="none" src="media/audio/human_eval/en2zh/ours_L2/83.wav"></audio></td>
+                  </tr>
+                  <tr>
+                    <td class="sys-cell">Ours (m5)</td>
+                    <td class="text-cell">因为他们的大部分时间都必须花在将事物简化为这种一个人都被放入其中的标准化盒子上</td>
+                    <td class="audio-cell"><audio controls preload="none" src="media/audio/human_eval/en2zh/ours_L5/83.wav"></audio></td>
+                  </tr>
+                  <tr>
+                    <td class="sys-cell">LiveInterpret</td>
+                    <td class="text-cell">因为他们大部分时间都必须花在将事情简化为这个标准化的框架上每个人都被框在其中</td>
+                    <td class="audio-cell"><audio controls preload="none" src="media/audio/human_eval/en2zh/liveinterpret_official_ast/83.wav"></audio></td>
+                  </tr>
+                  <tr>
+                    <td class="sys-cell">Seamless-Streaming</td>
+                    <td class="text-cell">因为那么多事件都得花在主东西上到这个标准化的盒子里里</td>
+                    <td class="audio-cell"><audio controls preload="none" src="media/audio/human_eval/en2zh/seamless_streaming/83.wav"></audio></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <div class="column is-half">
+          <div class="case-block">
+            <h3>zh→en · Case 2</h3>
+            <div class="case-source-bar">
+              <span><strong>Source</strong></span>
+              <audio controls preload="none" src="media/audio/human_eval/zh2en/source/414.wav"></audio>
+            </div>
+            <p class="cmp-ref"><strong>Source text:</strong> 对，呃，它就这个就就就，就显现了，于是你才能注意到这个，呃，自己的这个心，心慌啊，什么心跳啊之类的。</p>
+            <p class="cmp-ref"><strong>Reference:</strong> and just appears, and then you will notice your own flustered feeling, heartbeats, etc.</p>
+            <p class="cmp-asr-note">Translation text: ASR via <strong>Whisper-large-v3</strong></p>
+            <div class="table-container">
+              <table class="case-table case-table-cmp">
+                <thead>
+                  <tr>
+                    <th class="sys-h">System</th>
+                    <th>Translation text (ASR)</th>
+                    <th class="audio-h">Audio</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="sys-cell">Ours (m2)</td>
+                    <td class="text-cell">yes, he has just showed up. That&#x27;s why you need to know this as your own flight, your heartbeat and so on.</td>
+                    <td class="audio-cell"><audio controls preload="none" src="media/audio/human_eval/zh2en/ours_L2/414.wav"></audio></td>
+                  </tr>
+                  <tr>
+                    <td class="sys-cell">Ours (m5)</td>
+                    <td class="text-cell">Yes, he just just showed up. That&#x27;s why you need to pay attention to this, your heart palpitations, your heartbeat and so on.</td>
+                    <td class="audio-cell"><audio controls preload="none" src="media/audio/human_eval/zh2en/ours_L5/414.wav"></audio></td>
+                  </tr>
+                  <tr>
+                    <td class="sys-cell">LiveInterpret</td>
+                    <td class="text-cell">Yes, it just shows up. So you can notice that your heart palpitations</td>
+                    <td class="audio-cell"><audio controls preload="none" src="media/audio/human_eval/zh2en/liveinterpret_official_ast/414.wav"></audio></td>
+                  </tr>
+                  <tr>
+                    <td class="sys-cell">Seamless-Streaming</td>
+                    <td class="text-cell">It&#x27;s just that this is what it looks like. So you can notice this panic of your own. This panic of your own. What kind of heartbeat?</td>
+                    <td class="audio-cell"><audio controls preload="none" src="media/audio/human_eval/zh2en/seamless_streaming/414.wav"></audio></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="columns is-desktop case-columns">
+
+        <div class="column is-half">
+          <div class="case-block">
+            <h3>en→zh · Case 3</h3>
+            <div class="case-source-bar">
+              <span><strong>Source</strong></span>
+              <audio controls preload="none" src="media/audio/human_eval/en2zh/source/328.wav"></audio>
+            </div>
+            <p class="cmp-ref"><strong>Source text:</strong> The great sculptor Lorenzo Ghiberti used the term &quot;historia&quot; for the reliefs on the Baptistery doors o- of the Cathedral of Florence.</p>
+            <p class="cmp-ref"><strong>Reference:</strong> 伟大的雕刻家洛伦佐·吉贝尔蒂用“历史画”一词称佛罗伦萨大教堂洗礼堂门上的浮雕。</p>
+            <p class="cmp-asr-note">Translation text: ASR via <strong>Paraformer-zh</strong></p>
+            <div class="table-container">
+              <table class="case-table case-table-cmp">
+                <thead>
+                  <tr>
+                    <th class="sys-h">System</th>
+                    <th>Translation text (ASR)</th>
+                    <th class="audio-h">Audio</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="sys-cell">Ours (m2)</td>
+                    <td class="text-cell">伟大的雕塑帝亚洛伦佐吉贝尔蒂用历史一词去描述西里塘上的福地哦</td>
+                    <td class="audio-cell"><audio controls preload="none" src="media/audio/human_eval/en2zh/ours_L2/328.wav"></audio></td>
+                  </tr>
+                  <tr>
+                    <td class="sys-cell">Ours (m5)</td>
+                    <td class="text-cell">伟大的雕塑家洛伦佐吉贝尔蒂在佛罗伦萨大教堂西临门的浮雕上使用了历史一次</td>
+                    <td class="audio-cell"><audio controls preload="none" src="media/audio/human_eval/en2zh/ours_L5/328.wav"></audio></td>
+                  </tr>
+                  <tr>
+                    <td class="sys-cell">LiveInterpret</td>
+                    <td class="text-cell">伟大的雕塑家洛伦佐吉贝尔蒂使用了历史这个词来描述洗礼堂门上的浮雕那是佛罗伦萨大教堂的一部分</td>
+                    <td class="audio-cell"><audio controls preload="none" src="media/audio/human_eval/en2zh/liveinterpret_official_ast/328.wav"></audio></td>
+                  </tr>
+                  <tr>
+                    <td class="sys-cell">Seamless-Streaming</td>
+                    <td class="text-cell">大雕塑加洛renzgyberty使用了这个词histstory历史来形容佛罗伦萨萨大教堂的悉尼堂的雕塑</td>
+                    <td class="audio-cell"><audio controls preload="none" src="media/audio/human_eval/en2zh/seamless_streaming/328.wav"></audio></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <div class="column is-half">
+          <div class="case-block">
+            <h3>zh→en · Case 3</h3>
+            <div class="case-source-bar">
+              <span><strong>Source</strong></span>
+              <audio controls preload="none" src="media/audio/human_eval/zh2en/source/271.wav"></audio>
+            </div>
+            <p class="cmp-ref"><strong>Source text:</strong> 所以制片人领了最佳影片奖，因为他才是电影的第一负责人。</p>
+            <p class="cmp-ref"><strong>Reference:</strong> The producer claims the Best Picture because they are the first person-in-charge of the film.</p>
+            <p class="cmp-asr-note">Translation text: ASR via <strong>Whisper-large-v3</strong></p>
+            <div class="table-container">
+              <table class="case-table case-table-cmp">
+                <thead>
+                  <tr>
+                    <th class="sys-h">System</th>
+                    <th>Translation text (ASR)</th>
+                    <th class="audio-h">Audio</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="sys-cell">Ours (m2)</td>
+                    <td class="text-cell">The producer won the best picture award because he is the first person in charge of the film.</td>
+                    <td class="audio-cell"><audio controls preload="none" src="media/audio/human_eval/zh2en/ours_L2/271.wav"></audio></td>
+                  </tr>
+                  <tr>
+                    <td class="sys-cell">Ours (m5)</td>
+                    <td class="text-cell">So the producer won the best picture award because he is the first person responsible for the film.</td>
+                    <td class="audio-cell"><audio controls preload="none" src="media/audio/human_eval/zh2en/ours_L5/271.wav"></audio></td>
+                  </tr>
+                  <tr>
+                    <td class="sys-cell">LiveInterpret</td>
+                    <td class="text-cell">So the producer got it, for best picture, because he is the first person in charge of the film.</td>
+                    <td class="audio-cell"><audio controls preload="none" src="media/audio/human_eval/zh2en/liveinterpret_official_ast/271.wav"></audio></td>
+                  </tr>
+                  <tr>
+                    <td class="sys-cell">Seamless-Streaming</td>
+                    <td class="text-cell">So the producer got the best screenplay award because he was the first person in charge of the film.</td>
+                    <td class="audio-cell"><audio controls preload="none" src="media/audio/human_eval/zh2en/seamless_streaming/271.wav"></audio></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+
+
+
+
+  <!-- Long-form: text labels + audio, no viz -->
+  <section class="section" id="long-form">
+    <div class="container is-max-widescreen page-wide">
+      <h2 class="title is-3 has-text-centered">Long-Form Examples</h2>
+      <p class="has-text-centered" style="color:var(--text-secondary);margin-bottom:1.25rem;max-width:44rem;margin-left:auto;margin-right:auto;">
+        Document-level streaming outputs (RealSI Technology / Entertainment · m2 / m3 / m5).
+        Stereo: <strong>L = source</strong>, <strong>R = translation</strong> with a leading
+        <strong>2 / 3 / 5&nbsp;s</strong> delay on the right channel (use headphones).
+      </p>
+
+      <div class="columns is-desktop case-columns">
+        <div class="column is-half">
+          <div class="case-block">
+            <h3>en→zh</h3>
+            <div class="table-container">
+              <table class="case-table case-table-lf">
+                <thead>
+                  <tr>
+                    <th class="topic">Topic</th>
+                    <th class="lat">m</th>
+                    <th class="audio-h">Audio (L/R)</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="topic text-cell">Technology</td>
+                    <td class="lat">m2</td>
+                    <td class="audio-cell"><audio controls preload="none" src="media/audio/long_form_stereo/en2zh_m2/Technology.wav"></audio></td>
+                  </tr>
+                  <tr>
+                    <td class="topic text-cell">Technology</td>
+                    <td class="lat">m3</td>
+                    <td class="audio-cell"><audio controls preload="none" src="media/audio/long_form_stereo/en2zh_m3/Technology.wav"></audio></td>
+                  </tr>
+                  <tr>
+                    <td class="topic text-cell">Technology</td>
+                    <td class="lat">m5</td>
+                    <td class="audio-cell"><audio controls preload="none" src="media/audio/long_form_stereo/en2zh_m5/Technology.wav"></audio></td>
+                  </tr>
+                  <tr>
+                    <td class="topic text-cell">Entertainment</td>
+                    <td class="lat">m2</td>
+                    <td class="audio-cell"><audio controls preload="none" src="media/audio/long_form_stereo/en2zh_m2/Entertainment.wav"></audio></td>
+                  </tr>
+                  <tr>
+                    <td class="topic text-cell">Entertainment</td>
+                    <td class="lat">m3</td>
+                    <td class="audio-cell"><audio controls preload="none" src="media/audio/long_form_stereo/en2zh_m3/Entertainment.wav"></audio></td>
+                  </tr>
+                  <tr>
+                    <td class="topic text-cell">Entertainment</td>
+                    <td class="lat">m5</td>
+                    <td class="audio-cell"><audio controls preload="none" src="media/audio/long_form_stereo/en2zh_m5/Entertainment.wav"></audio></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <div class="column is-half">
+          <div class="case-block">
+            <h3>zh→en</h3>
+            <div class="table-container">
+              <table class="case-table case-table-lf">
+                <thead>
+                  <tr>
+                    <th class="topic">Topic</th>
+                    <th class="lat">m</th>
+                    <th class="audio-h">Audio (L/R)</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="topic text-cell">Technology</td>
+                    <td class="lat">m2</td>
+                    <td class="audio-cell"><audio controls preload="none" src="media/audio/long_form_stereo/zh2en_m2/Technology.wav"></audio></td>
+                  </tr>
+                  <tr>
+                    <td class="topic text-cell">Technology</td>
+                    <td class="lat">m3</td>
+                    <td class="audio-cell"><audio controls preload="none" src="media/audio/long_form_stereo/zh2en_m3/Technology.wav"></audio></td>
+                  </tr>
+                  <tr>
+                    <td class="topic text-cell">Technology</td>
+                    <td class="lat">m5</td>
+                    <td class="audio-cell"><audio controls preload="none" src="media/audio/long_form_stereo/zh2en_m5/Technology.wav"></audio></td>
+                  </tr>
+                  <tr>
+                    <td class="topic text-cell">Entertainment</td>
+                    <td class="lat">m2</td>
+                    <td class="audio-cell"><audio controls preload="none" src="media/audio/long_form_stereo/zh2en_m2/Entertainment.wav"></audio></td>
+                  </tr>
+                  <tr>
+                    <td class="topic text-cell">Entertainment</td>
+                    <td class="lat">m3</td>
+                    <td class="audio-cell"><audio controls preload="none" src="media/audio/long_form_stereo/zh2en_m3/Entertainment.wav"></audio></td>
+                  </tr>
+                  <tr>
+                    <td class="topic text-cell">Entertainment</td>
+                    <td class="lat">m5</td>
+                    <td class="audio-cell"><audio controls preload="none" src="media/audio/long_form_stereo/zh2en_m5/Entertainment.wav"></audio></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section hero is-light" id="results">
+    <div class="container is-max-desktop">
+      <h2 class="title is-3 has-text-centered">Quality–Latency Trade-offs</h2>
+      <div class="columns is-multiline">
+        <div class="column is-full figure-block">
+          <img src="media/images/sentence_s2t_s2st_tradeoff.png" alt="Figure 3 RealSI sentence-level content trade-off" loading="lazy">
+          <p class="caption has-text-centered">
+            <strong>Figure 3.</strong> RealSI sentence-level content trade-off.
+            Dashed curves denote S2TT text BLEU, solid curves denote S2ST ASR-BLEU, and horizontal lines mark offline reference lines.
+          </p>
+        </div>
+        <div class="column is-half figure-block">
+          <img src="media/images/sentence_s2st_quality_tradeoff.png" alt="Figure 4 RealSI sentence-level acoustic quality trade-off" loading="lazy">
+          <p class="caption has-text-centered">
+            <strong>Figure 4.</strong> RealSI sentence-level acoustic quality trade-off:
+            A.PCP and SIM-O against LAAL for En→Zh and Zh→En.
+          </p>
+        </div>
+        <div class="column is-half figure-block">
+          <img src="media/images/acl6060_dev_document_tradeoff.png" alt="Figure 5 ACL60/60-dev long-form streaming S2TT trade-off" loading="lazy">
+          <p class="caption has-text-centered">
+            <strong>Figure 5.</strong> ACL60/60-dev long-form streaming S2TT trade-off:
+            BLEU against StreamLAAL for En→Zh and Zh→En.
+          </p>
+        </div>
+      </div>
+
+      <h3 class="title is-5 has-text-centered" style="margin-top:1.5rem;">RealSI ASR-BLEU vs LiveInterpret</h3>
+      <div class="table-container" style="margin-top:0.75rem;">
+        <table class="compare-table">
+          <thead>
+            <tr>
+              <th>Type</th>
+              <th>Direction</th>
+              <th>m2</th>
+              <th>m3</th>
+              <th>m4</th>
+              <th>m5</th>
+              <th>m6</th>
+              <th>LiveInterpret</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Sent</td><td>En→Zh</td>
+              <td>24.21</td><td>25.01</td><td>25.54</td><td>25.92</td><td>26.32</td>
+              <td class="best">29.09</td>
+            </tr>
+            <tr>
+              <td>Sent</td><td>Zh→En</td>
+              <td>19.55</td><td>21.07</td><td>22.47</td><td>22.94</td>
+              <td class="best">23.47</td>
+              <td>22.19</td>
+            </tr>
+            <tr>
+              <td>Doc</td><td>En→Zh</td>
+              <td>26.58</td><td>28.42</td><td>29.69</td>
+              <td class="best">30.04</td>
+              <td>29.73</td><td>29.33</td>
+            </tr>
+            <tr>
+              <td>Doc</td><td>Zh→En</td>
+              <td>22.40</td><td>22.62</td><td>24.37</td><td>26.53</td><td>25.60</td>
+              <td class="best">26.80</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="has-text-centered" style="color:var(--text-secondary);margin-top:0.75rem;font-size:0.92rem;">
+        Numbers from the paper’s RealSI streaming S2ST evaluation. Bold marks the best in each row.
+      </p>
+    </div>
+  </section>
+
+  <section class="section" id="BibTeX">
+    <div class="container is-max-desktop content">
+      <div class="bibtex-header">
+        <h2 class="title">BibTeX</h2>
+        <button class="copy-bibtex-btn" onclick="copyBibTeX()" title="Copy BibTeX to clipboard">
+          <i class="fas fa-copy"></i>
+          <span class="copy-text">Copy</span>
+        </button>
+      </div>
+      <pre id="bibtex-code"><code>@misc{he2026simuls2stomni,
+  title         = {SimulS2ST-Omni: Data-Efficient Streaming Speech-to-Speech Translation via Explicit Trajectory Supervision},
+  author        = {He, Rongshen and Liang, Xinyu and Chen, Dekun and Li, Jiaqi and Chen, Mingjie and Wu, Zhizheng},
+  year          = {2026},
+  eprint        = {XXXX.XXXXX},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.CL},
+  note          = {arXiv preprint; identifier TBD}
+}</code></pre>
+    </div>
+  </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="columns is-centered">
+        <div class="column is-8">
+          <div class="content">
+            <p>
+              Built with the
+              <a href="https://github.com/eliahuhorwitz/Academic-project-page-template" target="_blank">Academic Project Page Template</a>
+              (adapted from <a href="https://nerfies.github.io" target="_blank">Nerfies</a>).
+              Licensed under
+              <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/" target="_blank">CC BY-SA 4.0</a>.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>
