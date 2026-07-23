@@ -79,6 +79,14 @@ body {
   color: var(--accent-color);
 }
 
+.live-demo-meta {
+  max-width: 40rem;
+  margin: 1rem auto 0;
+  font-size: 0.98rem;
+  line-height: 1.55;
+  color: var(--text-secondary);
+}
+
 .venue-badge {
   display: inline-block;
   margin: 0.15rem 0 0.85rem;

@@ -120,10 +120,11 @@
           <span class="metric-pill">End-to-end feel ≈ <strong>4–5s</strong></span>
           <span class="metric-pill">YouTube <strong>en→zh</strong> long-form</span>
         </div>
-        <h2 class="subtitle has-text-centered" style="margin-top:1rem;">
-          Browser tab capture → streaming OmniTalker S2ST → live captions.
-          Latency is dominated by filling the m2 decision window (~2s), then compute and playback.
-        </h2>
+        <p class="live-demo-meta has-text-centered">
+          This recording shows real-time interaction from a local browser with a model deployed on a remote RTX&nbsp;4090 server,
+          streaming YouTube en→zh long-form speech at latency tier <strong>m2</strong> (2&nbsp;s commit chunk).
+          The decision latency is about 2&nbsp;s, and the end-to-end felt lag is about 4–5&nbsp;s.
+        </p>
       </div>
     </div>
   </section>
